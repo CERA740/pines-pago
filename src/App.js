@@ -19,6 +19,25 @@ function generarPIN() {
   return pin.match(/.{1,4}/g).join("-");
 }
 
+// Formato fecha y hora "YYYY-MM-DD HH:mm:ss"
+function obtenerFechaHora() {
+  const ahora = new Date();
+  const pad = (n) => (n < 10 ? "0" + n : n);
+  return (
+    ahora.getFullYear() +
+    "-" +
+    pad(ahora.getMonth() + 1) +
+    "-" +
+    pad(ahora.getDate()) +
+    " " +
+    pad(ahora.getHours()) +
+    ":" +
+    pad(ahora.getMinutes()) +
+    ":" +
+    pad(ahora.getSeconds())
+  );
+}
+
 export default function App() {
   const [cantidades, setCantidades] = useState(
     productos.reduce((acc, p) => ({ ...acc, [p.id]: 0 }), {})
@@ -51,17 +70,24 @@ export default function App() {
 
   // Simula confirmación del pago
   const confirmarPago = () => {
-    // Generar recibo con PIN y detalles
-    const pin = generarPIN();
-    const detalles = productos
+    // Por cada producto con cantidad > 0 generamos un PIN con fecha
+    const fechaGeneracion = obtenerFechaHora();
+
+    const detallesConPIN = productos
       .filter((p) => cantidades[p.id] > 0)
       .map((p) => ({
-        nombre: p.nombre,
-        precio: p.precio,
+        pin: generarPIN(),
+        producto: p.nombre,
         cantidad: cantidades[p.id],
+        precio_unitario: p.precio,
         subtotal: p.precio * cantidades[p.id],
+        fecha_generacion: fechaGeneracion,
       }));
-    setRecibo({ pin, total, detalles });
+
+    setRecibo({
+      total,
+      detalles: detallesConPIN,
+    });
     setEstadoPago("pagado");
   };
 
@@ -73,29 +99,32 @@ export default function App() {
     doc.setFontSize(18);
     doc.text("Recibo de compra", 14, 22);
     doc.setFontSize(12);
-    doc.text(`PIN: ${recibo.pin}`, 14, 32);
-    doc.text(`Total: $${recibo.total.toFixed(2)}`, 14, 40);
+    doc.text(Total: $${recibo.total.toFixed(2)}, 14, 32);
 
-    // Tabla simple
-    let y = 50;
+    // Tabla con detalles + PIN + fecha
+    let y = 42;
     doc.text("Producto", 14, y);
-    doc.text("Cantidad", 90, y);
-    doc.text("Precio Unit.", 130, y);
-    doc.text("Subtotal", 170, y);
+    doc.text("Cantidad", 70, y);
+    doc.text("Precio Unit.", 100, y);
+    doc.text("Subtotal", 135, y);
+    doc.text("PIN", 170, y);
+    doc.text("Fecha/Hora", 210, y);
     y += 6;
 
     recibo.detalles.forEach((item) => {
-      doc.text(item.nombre, 14, y);
-      doc.text(item.cantidad.toString(), 90, y);
-      doc.text(`$${item.precio.toFixed(2)}`, 130, y);
-      doc.text(`$${item.subtotal.toFixed(2)}`, 170, y);
+      doc.text(item.producto, 14, y);
+      doc.text(item.cantidad.toString(), 70, y);
+      doc.text($${item.precio_unitario.toFixed(2)}, 100, y);
+      doc.text($${item.subtotal.toFixed(2)}, 135, y);
+      doc.text(item.pin, 170, y);
+      doc.text(item.fecha_generacion, 210, y);
       y += 6;
     });
 
     doc.save("recibo.pdf");
   };
 
-  // Estilos simplificados
+  // Estilos simplificados (igual que el original)
   const estilos = {
     contenedor: {
       maxWidth: 600,
@@ -183,9 +212,7 @@ export default function App() {
                       min="0"
                       max="100"
                       value={cantidades[p.id] || 0}
-                      onChange={(e) =>
-                        handleCantidadChange(p.id, e.target.value)
-                      }
+                      onChange={(e) => handleCantidadChange(p.id, e.target.value)}
                       style={estilos.inputCantidad}
                     />
                   </td>
@@ -197,9 +224,7 @@ export default function App() {
             </tbody>
           </table>
 
-          <h3
-            style={{ color: "#a80000", fontWeight: "bold", textAlign: "right" }}
-          >
+          <h3 style={{ color: "#a80000", fontWeight: "bold", textAlign: "right" }}>
             Total: ${total.toFixed(2)}
           </h3>
 
@@ -224,12 +249,6 @@ export default function App() {
         <>
           <div style={{ ...estilos.contenedor, marginTop: 20 }}>
             <h3 style={estilos.titulo}>Recibo generado</h3>
-            <p>
-              <strong>PIN:</strong> {recibo.pin}
-            </p>
-            <p>
-              <strong>Total:</strong> ${recibo.total.toFixed(2)}
-            </p>
             <table style={estilos.tabla}>
               <thead>
                 <tr>
@@ -237,15 +256,19 @@ export default function App() {
                   <th style={estilos.th}>Precio</th>
                   <th style={estilos.th}>Cantidad</th>
                   <th style={estilos.th}>Subtotal</th>
+                  <th style={estilos.th}>PIN</th>
+                  <th style={estilos.th}>Fecha/Hora</th>
                 </tr>
               </thead>
               <tbody>
                 {recibo.detalles.map((item, i) => (
                   <tr key={i}>
-                    <td style={estilos.td}>{item.nombre}</td>
-                    <td style={estilos.td}>${item.precio.toFixed(2)}</td>
+                    <td style={estilos.td}>{item.producto}</td>
+                    <td style={estilos.td}>${item.precio_unitario.toFixed(2)}</td>
                     <td style={estilos.td}>{item.cantidad}</td>
                     <td style={estilos.td}>${item.subtotal.toFixed(2)}</td>
+                    <td style={estilos.td}>{item.pin}</td>
+                    <td style={estilos.td}>{item.fecha_generacion}</td>
                   </tr>
                 ))}
               </tbody>
