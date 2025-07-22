@@ -83,7 +83,9 @@ export default function App() {
         subtotal: p.precio * cantidades[p.id],
         fecha_generacion: fechaGeneracion,
       }));
-
+    
+console.log("Detalles con PIN generados:", detallesConPIN);
+    
     setRecibo({
       total,
       detalles: detallesConPIN,
