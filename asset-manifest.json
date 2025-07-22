@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.js": "/pines-pago/static/js/main.65d2e510.js",
+    "static/js/239.0b54e122.chunk.js": "/pines-pago/static/js/239.0b54e122.chunk.js",
+    "static/js/977.d5167e13.chunk.js": "/pines-pago/static/js/977.d5167e13.chunk.js",
+    "static/js/732.29efe971.chunk.js": "/pines-pago/static/js/732.29efe971.chunk.js",
+    "index.html": "/pines-pago/index.html",
+    "main.65d2e510.js.map": "/pines-pago/static/js/main.65d2e510.js.map",
+    "239.0b54e122.chunk.js.map": "/pines-pago/static/js/239.0b54e122.chunk.js.map",
+    "977.d5167e13.chunk.js.map": "/pines-pago/static/js/977.d5167e13.chunk.js.map",
+    "732.29efe971.chunk.js.map": "/pines-pago/static/js/732.29efe971.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.65d2e510.js"
+  ]
+}
