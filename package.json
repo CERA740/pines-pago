@@ -1,16 +1,15 @@
-"homepage": "https://CERA740.github.io/pines-pago"
-
 {
   "name": "react",
   "version": "1.0.0",
   "description": "",
+  "homepage": "https://CERA740.github.io/pines-pago",
   "keywords": [],
   "main": "src/index.tsx",
   "dependencies": {
+    "jspdf": "3.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-scripts": "^5.0.0",
-    "jspdf": "3.0.1"
+    "react-scripts": "^5.0.0"
   },
   "devDependencies": {
     "@types/react": "19.0.0",
@@ -22,7 +21,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "browserslist": [
     ">0.2%",
