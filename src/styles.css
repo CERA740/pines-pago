@@ -1,0 +1,32 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+.App {
+  font-family: sans-serif;
+  text-align: center;
+  position: relative; /* importante para el pseudo-elemento */
+}
+
+.App::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px; /* tamaño del logo */
+  height: 300px; /* tamaño del logo */
+  background-image: url("/logo-cera.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.5; /* transparencia */
+  transform: translate(-50%, -50%);
+  pointer-events: none; /* para que no interfiera con clicks */
+  z-index: 0;
+}
+
+/* Para que el contenido esté sobre la marca de agua */
+.App > * {
+  position: relative;
+  z-index: 1;
+}
